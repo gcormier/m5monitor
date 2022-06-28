@@ -27,6 +27,8 @@ LGFX_Sprite THPIcons(&gfx);
 LGFX_Sprite WeatherIcons(&gfx);
 LGFX_Sprite SRSSIcons(&gfx);
 
+String currentTime;
+
 time_t t;
 time_t local;
 struct tm *tm;
@@ -190,33 +192,45 @@ void fetchHA()
       localSunriseTime = myTZ.toLocal(bigstringToTime(UTCSunrise));
       localSunsetTime = myTZ.toLocal(bigstringToTime(UTCSunset));
 
-      //localSunriseTime = bigstringToTime(UTCSunrise);
-      //localSunsetTime = bigstringToTime(UTCSunset);
-
       tmElements_t tm;
       breakTime(localSunriseTime, tm);
 
     }
+  }
+  haRequest.end();
+
+  // Current time
+  haRequest.begin("http://192.168.1.33:8123/api/states/sensor.time");
+  haRequest.addHeader("Authorization", "Bearer " + TOKEN);
+  httpCode = haRequest.GET();
+
+  if (httpCode > 0)
+  {
+    String payload = haRequest.getString();
+    Serial.println(payload);
+    DynamicJsonBuffer jsonBuffer(512);
+    JsonObject &root = jsonBuffer.parseObject(payload);
+    if (root.success())
+      currentTime = String((const char *)root["state"]);
     else
-    {
-    }
+      currentTime = String("unknown");
   }
   haRequest.end();
 }
 
 void showDateTime(void)
 {
-  char message[32];
+  //char message[32];
   
   gfx.setTextSize(FONT_SIZE_SMALL);
   gfx.setTextDatum(textdatum_t::top_center);
-  tmElements_t localTimeElements;
-  time_t localTime = myTZ.toLocal(time(nullptr));
+  //tmElements_t localTimeElements;
+  //time_t localTime = myTZ.toLocal(time(nullptr));
 
-  breakTime(localTime, localTimeElements);
+  //breakTime(localTime, localTimeElements);
 
-  sprintf(message,"%2d:%02d\r\n", localTimeElements.Hour, localTimeElements.Minute);
-  gfx.drawString(message, WIDTH / 2, 0);
+  //sprintf(message,"%2d:%02d\r\n", localTimeElements.Hour, localTimeElements.Minute);
+  gfx.drawString(currentTime, WIDTH / 2, 0);
   gfx.setTextDatum(textdatum_t::top_left);
 }
 
@@ -333,5 +347,5 @@ void loop(void)
 
   // If we are on battery, the call above succeeded, and this will not be reached
   // Just delay 1 minute, then update again
-  delay(1 * 60 * 1000);
+  delay(5 * 60 * 1000);
 }
