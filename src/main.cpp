@@ -23,15 +23,15 @@
 // Icon Sprites
 
 LGFX gfx;
-LGFX_Sprite THPIcons(&gfx);
-LGFX_Sprite WeatherIcons(&gfx);
+//LGFX_Sprite THPIcons(&gfx);
+//LGFX_Sprite WeatherIcons(&gfx);
 LGFX_Sprite SRSSIcons(&gfx);
 
 String currentTime;
 
-time_t t;
-time_t local;
-struct tm *tm;
+//time_t t;
+//time_t local;
+//struct tm *tm;
 //static const char *wd[7] = {"Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat"};
 
 TimeChangeRule myDST = {"EDT", Second, Sun, Mar, 2, -240}; //Daylight time = UTC - 4 hours
@@ -43,7 +43,7 @@ time_t localSunriseTime, localSunsetTime;
 
 void setup(void)
 {
-  constexpr uint_fast16_t WIFI_CONNECT_RETRY_MAX = 60; // 10 = 5s
+  constexpr uint_fast16_t WIFI_CONNECT_RETRY_MAX = 10;
   M5.begin(false, true, true, true, true);
   delay(100);
   M5.RTC.begin();
@@ -72,6 +72,7 @@ void setup(void)
   }
   gfx.endWrite();
   gfx.waitDisplay();
+  /*
   setenv("TZ", "EST+5EDT,M3.2.0/2,M11.1.0/2", 1);
   tzset();
   configTime(0, 0, "0.ca.pool.ntp.org", "1.ca.pool.ntp.org", "2.ca.pool.ntp.org");
@@ -81,8 +82,7 @@ void setup(void)
   // https://github.com/esp8266/Arduino/issues/4749
   while(time(nullptr) <= 100000)
     delay(100);
-
-  Serial.println("Ready");
+*/
 }
 
 time_t bigstringToTime(String myString)
@@ -113,7 +113,7 @@ void fetchHA()
   if (httpCode > 0)
   {
     String payload = haRequest.getString();
-    Serial.println(payload);
+    //Serial.println(payload);
     DynamicJsonBuffer jsonBuffer(512);
     JsonObject &root = jsonBuffer.parseObject(payload);
     if (root.success())
@@ -130,7 +130,7 @@ void fetchHA()
   if (httpCode > 0)
   {
     String payload = haRequest.getString();
-    Serial.println(payload);
+    //Serial.println(payload);
     DynamicJsonBuffer jsonBuffer(512);
     JsonObject &root = jsonBuffer.parseObject(payload);
     if (root.success())
@@ -147,7 +147,7 @@ void fetchHA()
   if (httpCode > 0)
   {
     String payload = haRequest.getString();
-    Serial.println(payload);
+    //Serial.println(payload);
     DynamicJsonBuffer jsonBuffer(512);
     JsonObject &root = jsonBuffer.parseObject(payload);
     if (root.success())
@@ -164,7 +164,7 @@ void fetchHA()
   if (httpCode > 0)
   {
     String payload = haRequest.getString();
-    Serial.println(payload);
+    //Serial.println(payload);
     DynamicJsonBuffer jsonBuffer(512);
     JsonObject &root = jsonBuffer.parseObject(payload);
     if (root.success())
@@ -181,7 +181,7 @@ void fetchHA()
   if (httpCode > 0)
   {
     String payload = haRequest.getString();
-    Serial.println(payload);
+    //Serial.println(payload);
     DynamicJsonBuffer jsonBuffer(512);
     JsonObject &root = jsonBuffer.parseObject(payload);
     if (root.success())
@@ -207,7 +207,7 @@ void fetchHA()
   if (httpCode > 0)
   {
     String payload = haRequest.getString();
-    Serial.println(payload);
+    //Serial.println(payload);
     DynamicJsonBuffer jsonBuffer(512);
     JsonObject &root = jsonBuffer.parseObject(payload);
     if (root.success())
@@ -292,7 +292,7 @@ void showBatteryLevel(uint_fast16_t x, uint_fast16_t y)
 
 void loop(void)
 {
-  char message[32];
+  char message[64];
 
   gfx.startWrite();
   gfx.fillScreen(TFT_WHITE);
