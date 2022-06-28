@@ -21,11 +21,11 @@
 #define HEIGHT  960
 
 // Icon Sprites
+
 LGFX gfx;
 LGFX_Sprite THPIcons(&gfx);
 LGFX_Sprite WeatherIcons(&gfx);
 LGFX_Sprite SRSSIcons(&gfx);
-
 
 time_t t;
 time_t local;
@@ -287,7 +287,7 @@ void loop(void)
   fetchHA();
 
   showDateTime();
-  gfx.setTextSize(FONT_SIZE_MEDIUM);
+  gfx.setTextSize(1.3);
   gfx.setTextDatum(textdatum_t::middle_center);
   
   // Labels
@@ -305,9 +305,9 @@ void loop(void)
 // Humidity
   gfx.setTextSize(FONT_SIZE_MEDIUM * 2);
 
-  sprintf(message, "%2.0f°", outdoorHumidity);
+  sprintf(message, "%2.0f%%", outdoorHumidity);
   gfx.drawString(message, WIDTH / 2, 350);
-  sprintf(message, "%2.0f°", indoorHumidity);
+  sprintf(message, "%2.0f%%", indoorHumidity);
   gfx.drawString(message, WIDTH / 2, 740);
     
 
